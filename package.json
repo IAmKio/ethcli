@@ -26,6 +26,7 @@
     "@oclif/plugin-help": "^5",
     "@oclif/plugin-plugins": "^2.0.1",
     "@types/luxon": "^3.0.1",
+    "colorette": "^2.0.19",
     "conf-cli": "^0.1.9",
     "inquirer": "^8.2.4",
     "luxon": "^3.0.3",

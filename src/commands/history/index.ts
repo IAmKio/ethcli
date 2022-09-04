@@ -1,14 +1,16 @@
+/* eslint-disable unicorn/prefer-module */
 import {Command, CliUx} from '@oclif/core'
-import {evmApi} from '../../providers/moralis'
-import {EvmTransaction} from '@moralisweb3/evm-utils'
-import {hasRequiredConfig} from '../../utilities/checks'
+import {bold, dim} from 'colorette'
 import {DateTime} from 'luxon'
+import {EvmTransaction} from '@moralisweb3/evm-utils'
+
+import {evmApi} from '../../providers/moralis'
+import {hasRequiredConfig} from '../../utilities/checks'
+const inquirer = require('inquirer')
 
 interface PromptEvmTransaction {
   chosenTx: EvmTransaction
 }
-
-const inquirer = require('inquirer')
 
 const api = evmApi()
 
@@ -55,21 +57,27 @@ export default class History extends Command {
       choices: txChoices,
     }])
     .then((answer: PromptEvmTransaction) => {
+      const tx: EvmTransaction = answer.chosenTx
+      const gasPercentageUsed: string | undefined = tx.gas?.div(tx.gasUsed).mul(100).toDecimal(0)
+
       this.log()
-      this.log(`From: ${answer.chosenTx.from.checksum}`)
-      this.log(`Contract address: ${answer.chosenTx.contractAddress ? answer.chosenTx.contractAddress?.checksum : 'No contract address interaction'}`)
-      this.log(`To: ${answer.chosenTx.to?.checksum}`)
-      this.log(`Value: ${answer.chosenTx.value}`)
+      this.log(`${bold('From:')} ${tx.from.checksum}`)
+      this.log(`${bold('Contract address:')} ${tx.contractAddress ? tx.contractAddress?.checksum : dim('No contract address interaction')}`)
+      this.log(`${bold('To:')} ${tx.to?.checksum}`)
+      this.log(`${bold('Value:')} ${tx.value?.ether} Ether`)
       this.log()
-      this.log(`Block hash: ${answer.chosenTx.blockHash}`)
-      this.log(`Block number: ${answer.chosenTx.blockNumber}`)
-      this.log(`Block relative timestamp: ${DateTime.fromJSDate(answer.chosenTx.blockTimestamp).toRelative()}`)
-      this.log(`Block timestamp: ${answer.chosenTx.blockTimestamp}`)
+      this.log(`${bold('Block hash:')} ${tx.blockHash}`)
+      this.log(`${bold('➜ Block number:')} ${tx.blockNumber}`)
+      this.log(`${bold('➜ Block relative timestamp:')} ${DateTime.fromJSDate(tx.blockTimestamp).toRelative()}`)
+      this.log(`${bold('➜ Block timestamp:')} ${tx.blockTimestamp}`)
       this.log()
-      this.log(`Estimated Gas: ${answer.chosenTx.gas}`)
-      this.log(`-> Actual gas used: ${answer.chosenTx.gasUsed}`)
-      this.log(`-> Gas price: ${answer.chosenTx.gasPrice}`)
+      this.log(`${bold('Estimated Gas:')} ${tx.gas}`)
+      this.log(`${bold('➜ Actual gas used:')} ${tx.gasUsed} (${gasPercentageUsed}% of estimate used)`)
+      this.log(`${bold('➜ Gas price at the time:')} ${tx.gasPrice}`)
       this.log()
+      this.log(`${bold('Block Explorer:')}`)
+      this.log(`${bold('➜ Transaction:')} ${tx.chain.getExplorerPath({transaction: tx.hash})})`)
+      this.log(`${bold('➜ Block:')} ${tx.chain.getExplorerPath({block: tx.blockHash})})`)
     })
   }
 }
