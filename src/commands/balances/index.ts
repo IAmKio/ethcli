@@ -1,8 +1,9 @@
-/* eslint-disable unicorn/prefer-module */
 import {Command, CliUx} from '@oclif/core'
 import {bold, dim, underline} from 'colorette'
 import {evmApi} from '../../providers/moralis'
+import {getChain} from '../../utilities/chains'
 import {hasRequiredConfig} from '../../utilities/checks'
+import {defaultFlags} from '../../utilities/defaults'
 
 const api = evmApi()
 
@@ -14,9 +15,10 @@ export default class Balances extends Command {
   ]
 
   static args = [{name: 'address', description: 'The blockchain address to query balances for', required: true}]
+  static flags = {...defaultFlags()}
 
   async run(): Promise<void> {
-    const {args} = await this.parse(Balances)
+    const {args, flags} = await this.parse(Balances)
 
     if (!hasRequiredConfig()) {
       this.log('Sorry, before you can continue - you need to set some options. Try running $ eth config moralis')
@@ -30,10 +32,12 @@ export default class Balances extends Command {
 
     const nativeBalance = await api.account.getNativeBalance({
       address: args.address,
+      chain: getChain(flags.chain),
     })
 
     const tokenBalances = await api.account.getTokenBalances({
       address: args.address,
+      chain: getChain(flags.chain),
     })
 
     CliUx.ux.action.stop()

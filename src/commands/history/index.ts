@@ -6,6 +6,8 @@ import {EvmTransaction} from '@moralisweb3/evm-utils'
 
 import {evmApi} from '../../providers/moralis'
 import {hasRequiredConfig} from '../../utilities/checks'
+import {defaultFlags} from '../../utilities/defaults'
+import {getChain} from '../../utilities/chains'
 const inquirer = require('inquirer')
 
 interface PromptEvmTransaction {
@@ -22,9 +24,10 @@ export default class History extends Command {
   ]
 
   static args = [{name: 'address', description: 'The blockchain address to query history for', required: true}]
+  static flags = {...defaultFlags()}
 
   async run(): Promise<void> {
-    const {args} = await this.parse(History)
+    const {args, flags} = await this.parse(History)
 
     if (!hasRequiredConfig()) {
       this.log('Sorry, before you can continue - you need to set some options. Try running $ eth config moralis')
@@ -35,6 +38,7 @@ export default class History extends Command {
 
     const transactions = await api.account.getTransactions({
       address: args.address,
+      chain: getChain(flags.chain),
     })
 
     CliUx.ux.action.stop()

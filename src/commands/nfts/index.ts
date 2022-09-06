@@ -1,9 +1,10 @@
-/* eslint-disable unicorn/prefer-module */
 import {Command, CliUx} from '@oclif/core'
 import {bold, dim, underline} from 'colorette'
 import {DateTime} from 'luxon'
 import {evmApi} from '../../providers/moralis'
+import {getChain} from '../../utilities/chains'
 import {hasRequiredConfig} from '../../utilities/checks'
+import {defaultFlags} from '../../utilities/defaults'
 
 const api = evmApi()
 
@@ -15,9 +16,10 @@ export default class Nfts extends Command {
   ]
 
   static args = [{name: 'address', description: 'The blockchain address to query NFTs for', required: true}]
+  static flags = {...defaultFlags()}
 
   async run(): Promise<void> {
-    const {args} = await this.parse(Nfts)
+    const {args, flags} = await this.parse(Nfts)
 
     if (!hasRequiredConfig()) {
       this.log('Sorry, before you can continue - you need to set some options. Try running $ eth config moralis')
@@ -31,6 +33,7 @@ export default class Nfts extends Command {
 
     const nfts = await api.account.getNFTs({
       address: args.address,
+      chain: getChain(flags.chain),
     })
 
     CliUx.ux.action.stop()

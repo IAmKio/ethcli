@@ -1,3 +1,4 @@
+/* eslint-disable unicorn/prefer-module */
 import {Command, Flags} from '@oclif/core'
 const inquirer = require('inquirer')
 import Conf = require('conf');
