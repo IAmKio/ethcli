@@ -30,7 +30,7 @@
     "conf-cli": "^0.1.9",
     "inquirer": "^8.2.4",
     "luxon": "^3.0.3",
-    "moralis": "^2.2.0"
+    "moralis": "^2.6.0"
   },
   "devDependencies": {
     "@oclif/test": "^2",
