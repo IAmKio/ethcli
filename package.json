@@ -28,7 +28,7 @@
     "@types/luxon": "^3.0.1",
     "colorette": "^2.0.19",
     "conf-cli": "^0.1.9",
-    "inquirer": "^8.2.4",
+    "inquirer": "^8.2.5",
     "luxon": "^3.0.3",
     "moralis": "^2.2.0"
   },
