@@ -20,7 +20,7 @@
     "@moralisweb3/core": "^2.2.0",
     "@moralisweb3/evm": "^2.0.0-alpha.2",
     "@moralisweb3/evm-api": "^2.2.0",
-    "@moralisweb3/evm-utils": "^2.2.0",
+    "@moralisweb3/evm-utils": "^2.8.1",
     "@moralisweb3/evm-wallet-connect-connector": "^2.0.0-alpha.2",
     "@oclif/core": "^1.13.10",
     "@oclif/plugin-help": "^5",
